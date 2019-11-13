@@ -3,6 +3,6 @@ from mainlayer import MainLayer
 from photolayer import PhotoLayer
 
 root = Tk()
-photos = PhotoLayer(root)
+photo = PhotoLayer(root)
 root.mainloop()
 # print(MainLayer.photos)
