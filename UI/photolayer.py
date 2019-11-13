@@ -3,10 +3,20 @@ from mainlayer import Style
 from tkinter import *
 from tkinter import filedialog
 from shutil import copy2
-  
+
+'''
+TODO List:
+    1. Try to make so that pop-up menu won't be displayed if list is empty.
+    2. Add image preview.
+'''  
 
 class PhotoLayer(MainLayer): 
     def __init__(self, tk_o):
+        super().__init__()
+        
+        self.setupUI(tk_o)
+
+    def setupUI(self, tk_o):
         self.tk_path = StringVar()
         self.root = tk_o
         
@@ -24,15 +34,14 @@ class PhotoLayer(MainLayer):
         self.addtolist_but = Button(self.frame, text="Add photo", command=self.update_list, **Style.BUT_ALIAS_1)
         self.load_but = Button(self.frame, text="Load photos", command=self.sender, **Style.BUT_ALIAS_1)
 
-        self.frame.pack(fill=BOTH)
-        self.lb_frame.pack(fill=BOTH)
-        self.input_form.pack(side=LEFT)
-        self.addtolist_but.pack(fill=BOTH)
-        self.load_but.pack(fill=BOTH)
-        self.browse.pack(side=RIGHT)
-        self.lb.pack(fill=BOTH)
-        MainLayer.__init__(self)
-    
+        self.frame.grid(column=0,row=0)
+        self.lb_frame.grid(row=0, columnspan=2, sticky=W+E)
+        self.input_form.grid(row=1, sticky=W+E)
+        self.addtolist_but.grid(row=2, sticky=W+E, columnspan=2)
+        self.load_but.grid(row=3, sticky=W+E, columnspan=2)
+        self.browse.grid(row=1, column=1)
+        self.lb.grid(columnspan=2, sticky=W+E)
+
     def save_path(self, path):
         self.photos.append(path)
         
@@ -47,7 +56,7 @@ class PhotoLayer(MainLayer):
         self.popup_menu.post(x,y)
     
     def browse(self):
-        self.root.filename = filedialog.askopenfilename(initialdir = "~/",title="Select file", filetypes=(("JPEG/JPG files","*.jpeg | *.jpg"),("PNG files", "*.png")))
+        self.root.filename = filedialog.askopenfilename(initialdir = "~/",title="Select file", filetypes=(("JPEG/JPG files","*.jpeg, *.jpg"),("PNG files", "*.png")))
         self.input_form.insert(0, self.root.filename)
 
     # --- Delete an item from photos[] and listbox
