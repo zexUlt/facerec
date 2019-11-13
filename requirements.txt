@@ -1,0 +1,8 @@
+mxnet-cu101mkl
+scipy
+scikit-learn
+opencv-python
+h5py
+matplotlib
+insightface
+#pypiwin32
