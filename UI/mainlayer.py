@@ -1,6 +1,5 @@
 class MainLayer:
-    photos = list()
-    videos = dict()
+	photos = list()
+	videos = dict()
 
-    
 
