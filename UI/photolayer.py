@@ -12,7 +12,7 @@ class PhotoLayer(MainLayer):
         self.lb.bind('<<ListboxSelect>>', self.cursorSelect)
         
         self.popup_menu = Menu(self.lb_frame, tearoff=0)
-        self.popup_menu.add_command(label='print', command=self.printtext)
+        self.popup_menu.add_command(label='delete', command=self.delete)
         self.popup_menu.add_command(label='fuck off!', command=quit)
         
         self.input_form = Entry(self.frame, textvariable=self.tk_path)
@@ -38,9 +38,10 @@ class PhotoLayer(MainLayer):
         y = self.frame.winfo_pointery()      
         self.popup_menu.post(x,y)
         
-
-    def printtext(self):
-        print(self.lb.get(self.lb.curselection()))
+    def delete(self):
+        item = self.lb.get(ANCHOR)
+        self.photos.remove(item)
+        self.lb.delete(ANCHOR)
 
     # --- Send photo to database 
     # def sender(self): 

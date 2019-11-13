@@ -1,21 +1,15 @@
 from tkinter import *
-root = Tk()
 
-def hello():
-    print("hello!")
+master = Tk()
 
-# create a popup menu
-menu = Menu(root, tearoff=0)
-menu.add_command(label="Undo", command=hello)
-menu.add_command(label="Redo", command=hello)
+listbox = Listbox(master)
+listbox.pack()
 
-# create a canvas
-frame = Frame(root, width=512, height=512)
-frame.pack()
+listbox.insert(END, "a list entry")
 
-def popup(event):
-    menu.post(event.x_root, event.y_root)
+for item in ["one", "two", "three", "four"]:
+    listbox.insert(END, item)
 
-# attach popup to canvas
-frame.bind("<Button-3>", popup)
-root.mainloop()
+b = Button(master, text="Delete", command=lambda listbox=listbox: listbox.delete(ANCHOR))
+b.pack()
+mainloop()

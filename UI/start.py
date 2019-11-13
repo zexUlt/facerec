@@ -5,4 +5,4 @@ from photolayer import PhotoLayer
 root = Tk()
 photo = PhotoLayer(root)
 root.mainloop()
-# print(MainLayer.photos)
+print(MainLayer.photos)
