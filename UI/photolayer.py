@@ -20,11 +20,11 @@ class PhotoLayer(MainLayer):
     
     def save_path(self, path):
         self.photos.append(path)
-    # --- Send photo to database 
-    # def sender(self): 
         
     def update_list(self):
         self.lb.insert(END, self.save_path(self.tk_path.get()))
     
     # def show_list(self):
     #     for i in photos:
+    # --- Send photo to database 
+    # def sender(self): 
