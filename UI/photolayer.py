@@ -10,12 +10,13 @@ class PhotoLayer(MainLayer):
         self.lb_frame = Frame(self.frame)
         self.lb = Listbox(self.lb_frame)
 
-        self.p_input = Entry(self.frame, textvariable=self.tk_path)
-        self.p_send = Button(self.frame, text="submit", command=self.update_list)
+        self.input_form = Entry(self.frame, textvariable=self.tk_path)
+        self.addtolist_but = Button(self.frame, text="submit", command=self.update_list)
 
+        self.lb.pack()
         self.frame.pack(side=LEFT)
-        self.p_input.pack(side=LEFT)
-        self.p_send.pack(side=RIGHT)
+        self.input_form.pack(side=LEFT)
+        self.addtolist_but.pack(side=RIGHT)
         MainLayer.__init__(self)
     
     def save_path(self, path):
