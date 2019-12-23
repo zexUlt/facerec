@@ -30,7 +30,7 @@ class PhotoLayer(MainLayer):
         self.popup_menu.add_command(label='fuck off!', command=quit)
         
         self.input_form = Entry(self.frame, textvariable=self.tk_path)
-        self.browse = Button(self.frame, text="Browse", command=self.browse, **Style.BUT_ALIAS_2)
+        self.browse = Button(self.frame, text="Browse", command=self.fbrowse, **Style.BUT_ALIAS_2)
         self.addtolist_but = Button(self.frame, text="Add photo", command=self.update_list, **Style.BUT_ALIAS_1)
         self.load_but = Button(self.frame, text="Load photos", command=self.sender, **Style.BUT_ALIAS_1)
 
@@ -55,7 +55,7 @@ class PhotoLayer(MainLayer):
         y = self.frame.winfo_pointery()      
         self.popup_menu.post(x,y)
     
-    def browse(self):
+    def fbrowse(self):
         self.root.filename = filedialog.askopenfilename(initialdir = "~/",title="Select file", filetypes=(("JPEG/JPG files","*.jpeg, *.jpg"),("PNG files", "*.png")))
         self.input_form.insert(0, self.root.filename)
 
