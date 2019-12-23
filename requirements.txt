@@ -5,4 +5,5 @@ opencv-python
 h5py
 matplotlib
 insightface
+python3-wxgtk4.0
 #pypiwin32
