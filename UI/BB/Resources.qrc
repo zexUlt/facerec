@@ -1,2 +1,7 @@
-<!DOCTYPE RCC>
-<RCC version="1.0"/>
+<RCC>
+    <qresource prefix="/rec">
+        <file>img/file.png</file>
+        <file>img/folder.png</file>
+        <file>img/log-out.png</file>
+    </qresource>
+</RCC>
