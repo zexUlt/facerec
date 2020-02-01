@@ -120,7 +120,7 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>558</width>
+           <width>472</width>
            <height>318</height>
           </rect>
          </property>
@@ -153,6 +153,13 @@
        </widget>
       </item>
      </layout>
+    </item>
+    <item>
+     <widget class="QPushButton" name="runButton">
+      <property name="text">
+       <string>Run</string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

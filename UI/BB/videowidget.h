@@ -1,9 +1,15 @@
 #ifndef VIDEOWIDGET_H
 #define VIDEOWIDGET_H
 
+#include "vidcontainer.h"
+
 #include <QWidget>
 #include <QMediaPlayer>
 #include <QDir>
+#include <QBoxLayout>
+#include <QLabel>
+#include <QTimeEdit>
+#include <QJsonDocument>
 
 QT_BEGIN_NAMESPACE
 class QAbstractButton;
@@ -25,27 +31,23 @@ public:
     void load(const QUrl &url);
     bool isPlayerAvailable() const;
 
-    QSize sizeHint() const override;
-
 public slots:
     void openFile();
-    void play();
 
 private slots:
     void processFrame(QImage img);
-    void mediaStateChanged(QMediaPlayer::State state);
-    void positionChanged(qint64 position);
-    void durationChanged(qint64 duration);
-    void setPosition(int position);
     void remove();
 
 private:
+    void SendToStorage(const VidContainer& cont);
+
+    QLabel* vidPreview = nullptr;
     QMediaPlayer *m_mediaPlayer = nullptr;
     QGraphicsVideoItem *m_videoItem = nullptr;
-    QAbstractButton *m_playButton = nullptr;
-    QSlider *m_positionSlider = nullptr;
+    QTimeEdit *start, *end;
     int widgetID = 0;
-
+    int timesLoaded = 0;
+    static std::vector<VidContainer> vidProps;
 };
 
 #endif // VIDEOWIDGET_H

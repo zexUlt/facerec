@@ -20,11 +20,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    vidcontainer.cpp \
     videoframegrabber.cpp \
     videowidget.cpp
 
 HEADERS += \
     mainwindow.h \
+    vidcontainer.h \
     videoframegrabber.h \
     videowidget.h
 
