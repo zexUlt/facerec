@@ -20,18 +20,24 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    popup.cpp \
+    settingswindow.cpp \
     vidcontainer.cpp \
     videoframegrabber.cpp \
     videowidget.cpp
 
 HEADERS += \
     mainwindow.h \
+    popup.h \
+    settingswindow.h \
     vidcontainer.h \
     videoframegrabber.h \
     videowidget.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    settingswindow.ui \
+    videowidget.ui
 
 TRANSLATIONS += \
     BB_en_US.ts

@@ -1,13 +1,17 @@
-import insightface
-import time
+import base64
 import datetime
+import glob
+import json
 import os
-import cv2
 import shutil
 import sys
+import time
+import urllib
+
+import cv2
+import insightface
 import numpy as np
-import glob
-import urllib, base64
+
 # import threading
 
 os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp"
@@ -15,6 +19,7 @@ os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp"
 # model = insightface.app.FaceAnalysis(det_name='retinaface_r50_v1', rec_name='arcface_r100_v1', ga_name='genderage_v1')
 model = insightface.app.FaceAnalysis(det_name='retinaface_mnet025_v2', rec_name='arcface_r100_v1', ga_name=None)
 model.prepare(ctx_id=0, nms=0.4)
+
 
 def putText(img, text, text_offset_x, text_offset_y, font_scale=1.5):
     font = cv2.FONT_HERSHEY_PLAIN
@@ -33,6 +38,7 @@ def putText(img, text, text_offset_x, text_offset_y, font_scale=1.5):
 
     return img
 
+
 def prepare_database():
     database = {}
 
@@ -42,6 +48,7 @@ def prepare_database():
         database[identity] = model.get(cv2.imread(file))[0].embedding #embedding_norm, embedding, normed_embedding
 
     return database
+
 
 def process_frame(img):
     faces = model.get(img, det_thresh = 0.8, det_scale = 1.0, max_num = 0)
@@ -64,6 +71,7 @@ def process_frame(img):
     
     return img
 
+
 def who_is_it(embedding):
     max_sim = 0
     identity = None
@@ -78,8 +86,10 @@ def who_is_it(embedding):
     else:
         return str(identity)
 
+
 def sendPhotosToDB(path):
     shutil.copy2(path, "database")
+
 
 def autotune(img):
     print('MXNET AUTOTUNE START: ')
@@ -88,19 +98,20 @@ def autotune(img):
     print('MXNET AUTOTUNE END: ')
     print(datetime.datetime.now())
 
-if __name__ == "__main__":
-    photoPath = sys.argv[1]
-    videoPath = sys.argv[2]
-    
-    try:
-        os.mkdir("database")
-        sendPhotosToDB(photoPath)
-    except FileExistsError:
-        sendPhotosToDB(photoPath)
 
+if __name__ == "__main__":
+    packedData = sys.argv[1]
+
+    data = json.loads(packedData)
+
+    pPhoto = data["photo"]
+    pVideo = data["video"][0]
+    videoTimeCodeStart = data["video"][1], data["video"][2]
+
+    sendPhotosToDB(pPhoto);
     database = prepare_database()
 
-    vs = cv2.VideoCapture(videoPath)
+    vs = cv2.VideoCapture(pVideo)
 
     ret, img = vs.read()
     # autotune(img)

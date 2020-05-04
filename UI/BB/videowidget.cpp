@@ -1,65 +1,48 @@
 #include "videowidget.h"
+#include "ui_videowidget.h"
+
 #include "videoframegrabber.h"
+#include "mainwindow.h"
 
 #include <QtWidgets>
 #include <QGraphicsVideoItem>
 #include <QVideoFrame>
 
 int VideoWidget::ResID = 0;
-std::vector<VidContainer> VideoWidget::vidProps;
+QVector<VidContainer> VideoWidget::vidProps;
 
-VideoWidget::VideoWidget(QWidget *parent) :
-    QWidget(parent)
+VideoWidget::VideoWidget(QWidget *parent, MainWindow* _m_window) :
+    QWidget(parent),
+    ui(new Ui::VideoWidget)
 {
+    ui->setupUi(this);
+
+    QImage placeholder = QImage(":/rec/img/placeholders/video_placeholder_lighter_dark.png");
+    placeholder = placeholder.scaledToWidth(ui->vidPreview->width(), Qt::SmoothTransformation);
+    placeholder = placeholder.scaledToHeight(ui->vidPreview->height(), Qt::SmoothTransformation);
+    ui->vidPreview->setPixmap(QPixmap::fromImage(placeholder));
+    qDebug() << placeholder.width() << placeholder.height();
+
     ResID++;
     widgetID = ResID;
+
+    m_window = std::move(_m_window);
 
     m_mediaPlayer = new QMediaPlayer(this, QMediaPlayer::VideoSurface);
     VideoFrameGrabber* grabber = new VideoFrameGrabber(this);
 
-//    start = new QTimeEdit(this);
-//    end = new QTimeEdit(this);
-
-    vidPreview = new QLabel;
-    vidPreview->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-    vidPreview->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-
-    QAbstractButton* openButton = new QPushButton(tr("Open..."));
-    connect(openButton, &QAbstractButton::clicked, this, &VideoWidget::openFile);
-
-    QAbstractButton* deleteButton = new QPushButton(tr("Delete"));
-    connect(deleteButton, &QAbstractButton::clicked, this, &VideoWidget::remove);
-
-    m_mediaPlayer->setMuted(true); // Mute player
-
+    m_mediaPlayer->setMuted(true);
     m_mediaPlayer->setVideoOutput(grabber);
 
     connect(grabber, SIGNAL(frameAvailable(QImage)), this, SLOT(processFrame(QImage)));
-
-    QBoxLayout* controlLayout = new QHBoxLayout;
-    controlLayout->setMargin(0);
-    controlLayout->addWidget(openButton);
-    controlLayout->addWidget(deleteButton);
-    controlLayout->addWidget(start);
-
-    QBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(vidPreview);
-    layout->addLayout(controlLayout);
 }
 
 void VideoWidget::processFrame(QImage img)
 {
-    qDebug() << "lol";
-
-    vidPreview->setMinimumSize(img.width(), img.height());
-    vidPreview->setMaximumSize(img.width(), img.height());
-    vidPreview->setPixmap(QPixmap::fromImage(img));
-}
-
-VideoWidget::~VideoWidget()
-{
-    for(auto child : this->children())
-        delete child;
+    img = img.scaledToWidth(this->ui->vidPreview->width(), Qt::SmoothTransformation);
+    img = img.scaledToHeight(this->ui->vidPreview->height(), Qt::SmoothTransformation);
+    this->ui->vidPreview->setPixmap(QPixmap::fromImage(img));
+    qDebug() << img.width() << img.height();
 }
 
 int VideoWidget::getID()
@@ -69,49 +52,67 @@ int VideoWidget::getID()
 
 bool VideoWidget::isPlayerAvailable() const
 {
-    return m_mediaPlayer->isAvailable();
+    return this->m_mediaPlayer->isAvailable();
 }
 
-void VideoWidget::openFile()
+void VideoWidget::on_openBtn_clicked()
 {
-    if(timesLoaded > 0){
-        vidPreview->clear();
-    }
-
     QFileDialog fileDialog(this);
+    ApplySettings();
     fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
     fileDialog.setWindowTitle(tr("Open Movie"));
+
     const QStringList supportedMimeTypes = m_mediaPlayer->supportedMimeTypes();
+
     if (!supportedMimeTypes.isEmpty())
         fileDialog.setMimeTypeFilters(supportedMimeTypes);
-    fileDialog.setDirectory(QStandardPaths::standardLocations(QStandardPaths::MoviesLocation).value(0, QDir::homePath()));
+
+    fileDialog.setDirectory(this->pdbVideo);
     if (fileDialog.exec() == QDialog::Accepted){
-        auto path = fileDialog.selectedUrls().constFirst();
-        load(path);
+        auto urlToVideo = fileDialog.selectedUrls().constFirst();
+        load(urlToVideo);
     }
 }
 
-void VideoWidget::load(const QUrl &url)
-{
-    auto cont = new VidContainer(url.fileName());
-    SendToStorage(*cont); // Sending video props packed into structure
-
-    this->timesLoaded++;
-    m_mediaPlayer->setMedia(url);
-
-    m_mediaPlayer->setPosition(5000); // Setting media playback to 5th sec
-    m_mediaPlayer->play();
-    m_mediaPlayer->pause();
-}
-
-void VideoWidget::remove()
+void VideoWidget::on_deleteBtn_clicked()
 {
     auto wid = static_cast<VideoWidget*>(sender()->parent());
 
     delete wid;
 }
 
+void VideoWidget::load(const QUrl &url)
+{
+    auto cont = new VidContainer(url.toString().remove(0, 8));
+    SendToStorage(*cont); // Sending video props packed into structure
+
+    if(timesLoaded > 0){
+        this->ui->vidPreview->clear();
+    }
+
+    this->timesLoaded++;
+    m_mediaPlayer->setMedia(url);
+
+    m_mediaPlayer->setPosition(15000); // Setting media playback to 5th sec
+    m_mediaPlayer->play();
+    m_mediaPlayer->pause();
+}
+
 void VideoWidget::SendToStorage(const VidContainer &cont)
 {
     VideoWidget::vidProps.push_back(cont);
 }
+
+void inline VideoWidget::ApplySettings()
+{
+    this->pdbVideo = this->m_window->pdbVideo;
+}
+
+VideoWidget::~VideoWidget()
+{
+    delete ui;
+}
+
+
+
+

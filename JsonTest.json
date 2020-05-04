@@ -1,0 +1,9 @@
+{
+    "photo": "D:/DAN/facerec/database/Anvar.png",
+    "video": {
+        "D:/DAN/facerec/videodatabase/test.mp4": [
+            0,
+            0
+        ]
+    }
+}

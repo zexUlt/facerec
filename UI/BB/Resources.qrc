@@ -1,7 +1,17 @@
 <RCC>
     <qresource prefix="/rec">
-        <file>img/file.png</file>
-        <file>img/folder.png</file>
-        <file>img/log-out.png</file>
+        <file>img/icons/file.png</file>
+        <file>img/icons/folder.png</file>
+        <file>img/icons/log-out.png</file>
+        <file>img/icons/play.png</file>
+	<file>img/icons/recycle.png</file>
+	<file>img/icons/recycling-bin.png</file>
+        <file>img/placeholders/photo_placeholder_dark.png</file>
+        <file>img/placeholders/video_placeholder_dark.png</file>
+        <file>img/placeholders/photo_placeholder_white.png</file>
+        <file>img/placeholders/video_placeholder_white.png</file>
+        <file>img/placeholders/photo_placeholder_lighter_dark.png</file>
+        <file>img/placeholders/video_placeholder_lighter_dark.png</file>
+	<file>style/ScrollBar.qss</file>
     </qresource>
 </RCC>

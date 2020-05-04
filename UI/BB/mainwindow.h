@@ -3,26 +3,32 @@
 
 #include "videowidget.h"
 #include "vidcontainer.h"
+#include "settingswindow.h"
 
-#include <QMainWindow>
-#include <QFileDialog>
-#include <QPushButton>
-#include <QVBoxLayout>
-#include <QMessageBox>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QJsonValue>
 #include <QObject>
+#include <QMainWindow>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+class QSlider;
+class QFileDialog;
+class QPushButton;
+class QVBoxLayout;
+class QMessageBox;
+class QJsonObject;
+class QJsonArray;
+class QJsonDocument;
+class QJsonValue;
+class QLineEdit;
+class QScrollBar;
+
 class MainWindow : public QMainWindow
 {
     friend class VideoWidget;
     Q_OBJECT
-    std::vector<QPixmap> images;
 
 public:
     MainWindow(QWidget *parent = nullptr);
@@ -34,12 +40,26 @@ private slots:
 
     void on_runButton_clicked();
 
-private:
-    QUrl PackToJSON();
-//    QJsonArray QVectorToJSON(QVector<VidContainer>);
+    void on_actionSettings_triggered();
 
+private:
+    QString PackToJSON() const;
+    void ApplySettingsConfig();
+    void onSettingsClosed();
+    void SliderToMax();
+
+/** Defaults Paths BEGIN **/
+    QString pdbPhoto;
+    QString pdbVideo;
+    QString pRoot;
+    QString pPyProcess;
+/** Defaults Paths END **/
+
+    QVector<QPixmap> images;
     Ui::MainWindow *ui;
     QVBoxLayout* vbox;
-    QString photo;
+    QString pPhoto;
+
+    SettingsWindow* settings;
 };
 #endif // MAINWINDOW_H

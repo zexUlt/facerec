@@ -1,0 +1,13 @@
+main.o
+mainwindow.o
+popup.o
+settingswindow.o
+vidcontainer.o
+videoframegrabber.o
+videowidget.o
+qrc_Resources.o
+moc_mainwindow.o
+moc_popup.o
+moc_settingswindow.o
+moc_videoframegrabber.o
+moc_videowidget.o
