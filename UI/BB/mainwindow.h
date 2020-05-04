@@ -4,6 +4,7 @@
 #include "videowidget.h"
 #include "vidcontainer.h"
 #include "settingswindow.h"
+#include "debugconsole.h"
 
 #include <QObject>
 #include <QMainWindow>
@@ -42,6 +43,8 @@ private slots:
 
     void on_actionSettings_triggered();
 
+    void on_actionLog_triggered();
+
 private:
     QString PackToJSON() const;
     void ApplySettingsConfig();
@@ -53,6 +56,7 @@ private:
     QString pdbVideo;
     QString pRoot;
     QString pPyProcess;
+    QString pLog;
 /** Defaults Paths END **/
 
     QVector<QPixmap> images;

@@ -1,6 +1,8 @@
 #ifndef SETTINGSWINDOW_H
 #define SETTINGSWINDOW_H
 
+#include "debugconsole.h"
+
 #include <QDialog>
 
 
@@ -38,7 +40,7 @@ private slots:
 private:
     QString getPath(const QString&, bool);
     void setConfigDefaults();
-    void UpdateConfig(const QString&, const QString&);
+    void UpdateConfig(const QList< QPair<QString, QString> >&);
     void LoadSettings();
 
     Ui::SettingsWindow *ui;

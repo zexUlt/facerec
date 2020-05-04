@@ -15,15 +15,18 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    qDebug() << this->ui->layoutWidget->children();
+
     popup = new PopUp(this);
 
     QDir rootDirectory = QDir::currentPath();
+    DebugConsole(this, "eye.log").log("Current root is: [" + rootDirectory.absolutePath() + "]");
 
     bool isFound = false;
     for(auto file : rootDirectory.entryList()){
         if(file.contains("config")){
             isFound = true;
-            this->configName = file;
+            configName = file;
         }
     }
 
@@ -31,7 +34,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
         this->setConfigDefaults();
     }
 
-    this->LoadSettings();
+    LoadSettings();
 }
 
 SettingsWindow::~SettingsWindow()
@@ -43,6 +46,8 @@ QString SettingsWindow::getPath(const QString& currentPath, bool isFile)
 {
     QFileDialog dialog;
     QString dirPath;
+
+    DebugConsole(this, "eye.log").log("Current path is: [" + currentPath + "]");
 
     if(currentPath.contains(".")){
         int posDelim;
@@ -73,29 +78,30 @@ void SettingsWindow::on_browseRootBtn_clicked()
 {
 
    QString path = getPath(ui->rootPathEntry->text(), false);
+   DebugConsole(this, "eye.log").log("Root path changed from: [" + ui->rootPathEntry->text() + "] To: [" + path + "]");
    ui->rootPathEntry->setText(path);
-//   this->UpdateConfig(ui->rootPathEntry->objectName(), path);
+
 }
 
 void SettingsWindow::on_browsePhotoBtn_clicked()
 {
     QString path = getPath(ui->photoPathEntry->text(), false);
+    DebugConsole(this, "eye.log").log("Photo path changed from: [" + ui->photoPathEntry->text() + "] To: [" + path + "]");
     ui->photoPathEntry->setText(path);
-//    this->UpdateConfig(ui->photoPathEntry->objectName(), path);
 }
 
 void SettingsWindow::on_browseVideoBtn_clicked()
 {
     QString path = getPath(ui->videoPathEntry->text(), false);
+    DebugConsole(this, "eye.log").log("Video path changed from: [" + ui->videoPathEntry->text() + "] To: [" + path + "]");
     ui->videoPathEntry->setText(path);
-//    this->UpdateConfig(ui->videoPathEntry->objectName(), path);
 }
 
 void SettingsWindow::on_browsePyBtn_clicked()
 {
     QString path = getPath(ui->pyModulePathEntry->text(), true);
+    DebugConsole(this, "eye.log").log("Py path changed from: [" + ui->pyModulePathEntry->text() + "] To: [" + path + "]");
     ui->pyModulePathEntry->setText(path);
-//    this->UpdateConfig(ui->pyModulePathEntry->objectName(), path);
 }
 
 
@@ -122,20 +128,27 @@ void SettingsWindow::setConfigDefaults()
     this->configName = jsonCfg.fileName();
 }
 
-void SettingsWindow::UpdateConfig(const QString& param, const QString& value)
+void SettingsWindow::UpdateConfig(const QList< QPair<QString, QString> >& param)
 {
     QFile configFile;
     configFile.setFileName(this->configName);
     configFile.open(QIODevice::ReadOnly | QIODevice::Text);
+
+    DebugConsole(this, "eye.log").log("Config content");
+    DebugConsole(this, "eye.log").log("Config content: " + configFile.readAll() + "]");
     QJsonParseError JsonParseError;
     QJsonDocument jsonCfg = QJsonDocument::fromJson(configFile.readAll(), &JsonParseError);
+    qDebug() << "Json READ ~~~ " << jsonCfg;
     configFile.close();
 
     configFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate);
     QJsonObject RootObject = jsonCfg.object();
-    RootObject.remove(param);
-    RootObject.insert(param, value);
+    for(auto obj : param){
+        RootObject.remove(obj.first);
+        RootObject.insert(obj.first, obj.second);
+    }
     jsonCfg.setObject(RootObject);
+    qDebug() << "Json WRITE ~~~ " << jsonCfg;
     configFile.write(jsonCfg.toJson(QJsonDocument::Indented));
     configFile.close();
 }
@@ -143,6 +156,7 @@ void SettingsWindow::UpdateConfig(const QString& param, const QString& value)
 void SettingsWindow::LoadSettings()
 {
     QFile config = QFile(this->configName);
+    DebugConsole(this, "eye.log").log("Configuration file: [" + configName + "]");
     config.open(QIODevice::ReadOnly | QIODevice::Text);
     QString val = config.readAll();
     QJsonDocument jsonCfg = QJsonDocument::fromJson(val.toUtf8());
@@ -157,12 +171,25 @@ void SettingsWindow::LoadSettings()
 
 void SettingsWindow::on_SaveBtn_clicked()
 {
-    for(auto obj : this->children()){
-        auto target = dynamic_cast<QLineEdit*>(obj);
-        if(target != NULL){
-            this->UpdateConfig(target->objectName(), target->text());
-        }
+
+    auto childrenList = this->findChildren<QLineEdit*>();
+    QList< QPair<QString, QString> > paramsToUpdate;
+    for(auto child : childrenList){
+        DebugConsole(this, "eye.log").log("Param: [" + child->objectName() + "] Value: [" + child->text() + "]");
+        paramsToUpdate.append(QPair<QString, QString>(child->objectName(), child->text()));
     }
+
+    this->UpdateConfig(paramsToUpdate);
+//    for(auto obj : this->ui->layoutWidget->children()){
+//        auto target = qobject_cast<QLineEdit*>(obj);
+//        qDebug() << obj;
+//        if(target != nullptr){
+//            DebugConsole(this, "eye.log").log("Target found.");
+//            this->UpdateConfig(target->objectName(), target->text());
+//        }
+//    }
+
+    DebugConsole(this, "eye.log").log("Settings saved");
 
     this->popup->setPopupText("Saved!");
     popup->show();

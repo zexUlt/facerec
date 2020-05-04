@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->scrollArea->verticalScrollBar()->setStyleSheet(styleSheet);
 
     auto PhotoPlaceholder = QImage(":/rec/img/placeholders/photo_placeholder_lighter_dark.png");
+
     PhotoPlaceholder = PhotoPlaceholder.scaledToWidth(ui->imgPanel->width(), Qt::SmoothTransformation);
     PhotoPlaceholder = PhotoPlaceholder.scaledToHeight(ui->imgPanel->height(), Qt::SmoothTransformation);
     ui->imgPanel->setPixmap(QPixmap::fromImage(PhotoPlaceholder));
@@ -44,6 +45,10 @@ MainWindow::MainWindow(QWidget *parent)
     ApplySettingsConfig();
     connect(settings, &SettingsWindow::finished, this, &MainWindow::onSettingsClosed);
     connect(ui->scrollArea->verticalScrollBar(), &QScrollBar::rangeChanged, this, &MainWindow::SliderToMax);
+
+    pLog = "eye.log";
+
+    DebugConsole(this, pLog).log("Program started");
 
 }
 
@@ -62,6 +67,7 @@ void MainWindow::ApplySettingsConfig()
     this->pRoot = RootObject.find("rootPathEntry").value().toString();
     this->pPyProcess = RootObject.find("pyModulePathEntry").value().toString();
     this->pdbVideo = RootObject.find("videoPathEntry").value().toString();
+
 }
 
 void MainWindow::on_addImageBtn_clicked()
@@ -149,4 +155,8 @@ void MainWindow::on_actionSettings_triggered()
 void MainWindow::onSettingsClosed()
 {
     ApplySettingsConfig();
+}
+
+void MainWindow::on_actionLog_triggered()
+{
 }

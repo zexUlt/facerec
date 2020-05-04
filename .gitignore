@@ -1,6 +1,4 @@
 database
 UI/__pycache__
 videodatabase
-UI/ml.py
-UI/pl.py
-UI/vl.py
+UI/build*

@@ -18,6 +18,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    debugconsole.cpp \
     main.cpp \
     mainwindow.cpp \
     popup.cpp \
@@ -27,6 +28,7 @@ SOURCES += \
     videowidget.cpp
 
 HEADERS += \
+    debugconsole.h \
     mainwindow.h \
     popup.h \
     settingswindow.h \
@@ -40,7 +42,22 @@ FORMS += \
     videowidget.ui
 
 TRANSLATIONS += \
-    BB_en_US.ts
+    BB_en_US.ts\
+
+RC_ICONS += eye.ico
+
+CONFIG(debug, debug|release){
+    BUILDDIR = debug
+} else {
+    BUILDDIR = release
+}
+
+OBJECTS_DIR = $${QT_ARCH}/obj
+UI_DIR = $${QT_ARCH}/ui
+MOC_DIR = $${QT_ARCH}/moc
+RCC_DIR = $${QT_ARCH}/rcc
+DESTDIR = $${QT_ARCH}/$$BUILDDIR
+QMAKE_POST_LINK += "$(QTDIR)/bin/windeployqt $$DESTDIR"
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
