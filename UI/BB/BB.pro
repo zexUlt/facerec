@@ -18,21 +18,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    datastorage.cpp \
     debugconsole.cpp \
     main.cpp \
     mainwindow.cpp \
     popup.cpp \
     settingswindow.cpp \
-    vidcontainer.cpp \
     videoframegrabber.cpp \
     videowidget.cpp
 
 HEADERS += \
+    datastorage.h \
     debugconsole.h \
     mainwindow.h \
     popup.h \
     settingswindow.h \
-    vidcontainer.h \
     videoframegrabber.h \
     videowidget.h
 

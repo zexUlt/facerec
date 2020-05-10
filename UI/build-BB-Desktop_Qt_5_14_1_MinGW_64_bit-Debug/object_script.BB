@@ -1,9 +1,9 @@
+x86_64/obj/datastorage.o
 x86_64/obj/debugconsole.o
 x86_64/obj/main.o
 x86_64/obj/mainwindow.o
 x86_64/obj/popup.o
 x86_64/obj/settingswindow.o
-x86_64/obj/vidcontainer.o
 x86_64/obj/videoframegrabber.o
 x86_64/obj/videowidget.o
 x86_64/obj/qrc_Resources.o

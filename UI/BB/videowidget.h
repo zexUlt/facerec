@@ -1,7 +1,7 @@
 #ifndef VIDEOWIDGET_H
 #define VIDEOWIDGET_H
 
-#include "vidcontainer.h"
+#include "datastorage.h"
 
 #include <QWidget>
 #include <QMediaPlayer>
@@ -43,19 +43,22 @@ private slots:
     void on_deleteBtn_clicked();
 
 private:
-    void SendToStorage(const VidContainer& cont);
+    void SendToStorage(const DataStorage& cont);
     void ApplySettings();
 
     /* Default paths BEGIN */
     QString pdbVideo;
     /* Default paths END */
 
+    // Path to video in "this" widget
+    QString pVideo;
+
+    DataStorage ds;
     MainWindow* m_window;
     QMediaPlayer *m_mediaPlayer = nullptr;
     QGraphicsVideoItem *m_videoItem = nullptr;
     int widgetID = 0;
     int timesLoaded = 0;
-    static QVector<VidContainer> vidProps;
     Ui::VideoWidget *ui;
 };
 

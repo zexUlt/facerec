@@ -1,5 +1,6 @@
 {
-    "photo": "D:/DAN/facerec/database/Sample-1---right.jpg",
+    "out": "D:/DAN/facerec/out",
+    "photo": "D:/DAN/facerec/database/Anvar.png",
     "video": {
         "D:/DAN/facerec/videodatabase/test.mp4": [
             0,

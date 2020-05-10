@@ -15,7 +15,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    qDebug() << this->ui->layoutWidget->children();
+//    qDebug() << this->ui->layoutWidget->children();
 
     popup = new PopUp(this);
 
@@ -104,6 +104,13 @@ void SettingsWindow::on_browsePyBtn_clicked()
     ui->pyModulePathEntry->setText(path);
 }
 
+void SettingsWindow::on_browseOutBtn_clicked()
+{
+    QString path = getPath(ui->outFolderPathEntry->text(), false);
+    ds.setOutputPath(path);
+    DebugConsole(this, "eye.log").log("Output path changed from: [" + ui->outFolderPathEntry->text() + "] To: [" + path + "]");
+    ui->outFolderPathEntry->setText(path);
+}
 
 void SettingsWindow::setConfigDefaults()
 {
@@ -138,7 +145,7 @@ void SettingsWindow::UpdateConfig(const QList< QPair<QString, QString> >& param)
     DebugConsole(this, "eye.log").log("Config content: " + configFile.readAll() + "]");
     QJsonParseError JsonParseError;
     QJsonDocument jsonCfg = QJsonDocument::fromJson(configFile.readAll(), &JsonParseError);
-    qDebug() << "Json READ ~~~ " << jsonCfg;
+//    qDebug() << "Json READ ~~~ " << jsonCfg;
     configFile.close();
 
     configFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate);
@@ -148,7 +155,7 @@ void SettingsWindow::UpdateConfig(const QList< QPair<QString, QString> >& param)
         RootObject.insert(obj.first, obj.second);
     }
     jsonCfg.setObject(RootObject);
-    qDebug() << "Json WRITE ~~~ " << jsonCfg;
+//    qDebug() << "Json WRITE ~~~ " << jsonCfg;
     configFile.write(jsonCfg.toJson(QJsonDocument::Indented));
     configFile.close();
 }
@@ -194,3 +201,4 @@ void SettingsWindow::on_SaveBtn_clicked()
     this->popup->setPopupText("Saved!");
     popup->show();
 }
+

@@ -9,7 +9,6 @@
 #include <QVideoFrame>
 
 int VideoWidget::ResID = 0;
-QVector<VidContainer> VideoWidget::vidProps;
 
 VideoWidget::VideoWidget(QWidget *parent, MainWindow* _m_window) :
     QWidget(parent),
@@ -21,7 +20,7 @@ VideoWidget::VideoWidget(QWidget *parent, MainWindow* _m_window) :
     placeholder = placeholder.scaledToWidth(ui->vidPreview->width(), Qt::SmoothTransformation);
     placeholder = placeholder.scaledToHeight(ui->vidPreview->height(), Qt::SmoothTransformation);
     ui->vidPreview->setPixmap(QPixmap::fromImage(placeholder));
-    qDebug() << placeholder.width() << placeholder.height();
+//    qDebug() << placeholder.width() << placeholder.height();
 
     ResID++;
     widgetID = ResID;
@@ -42,7 +41,7 @@ void VideoWidget::processFrame(QImage img)
     img = img.scaledToWidth(this->ui->vidPreview->width(), Qt::SmoothTransformation);
     img = img.scaledToHeight(this->ui->vidPreview->height(), Qt::SmoothTransformation);
     this->ui->vidPreview->setPixmap(QPixmap::fromImage(img));
-    qDebug() << img.width() << img.height();
+//    qDebug() << img.width() << img.height();
 }
 
 int VideoWidget::getID()
@@ -76,15 +75,19 @@ void VideoWidget::on_openBtn_clicked()
 
 void VideoWidget::on_deleteBtn_clicked()
 {
-    auto wid = static_cast<VideoWidget*>(sender()->parent());
-
-    delete wid;
+    ds.removeVideoNameFromStorage(this->pVideo);
+//    qDebug() << "THIS ~~~ " << this;
+//    qDebug() << "SENDER_PARENT ~~~ " << sender()->parent();
+    delete this;
 }
 
 void VideoWidget::load(const QUrl &url)
 {
-    auto cont = new VidContainer(url.toString().remove(0, 8));
-    SendToStorage(*cont); // Sending video props packed into structure
+//    auto cont = new DataStorage(url.toString().remove(0, 8));
+//    SendToStorage(*cont); // Sending video props packed into structure
+    this->pVideo = url.toString().remove(0, 8);
+    this->ds.addVideoName(this->pVideo);
+
 
     if(timesLoaded > 0){
         this->ui->vidPreview->clear();
@@ -98,10 +101,10 @@ void VideoWidget::load(const QUrl &url)
     m_mediaPlayer->pause();
 }
 
-void VideoWidget::SendToStorage(const VidContainer &cont)
-{
-    VideoWidget::vidProps.push_back(cont);
-}
+//void VideoWidget::SendToStorage(const DataStorage &cont)
+//{
+//    VideoWidget::vidProps.push_back(cont);
+//}
 
 void inline VideoWidget::ApplySettings()
 {

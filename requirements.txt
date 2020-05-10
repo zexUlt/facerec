@@ -1,9 +1,8 @@
-mxnet-cu101mkl
+mxnet-cu92
 scipy
 scikit-learn
 opencv-python
 h5py
 matplotlib
 insightface
-python3-wxgtk4.0
-#pypiwin32
+# pypiwin32

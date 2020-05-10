@@ -14,7 +14,7 @@
 
 /** TODO:
  * *Main quests*
- * 1. Create flexible settings menu
+ * 1. Create flexible settings menu DONE
  * 1.1. Make flags(?) to choose file or directory DONE
  * 1.2. Apply settings to PhotoWidget and VideoWidget DONE
  * *Side quests*
@@ -112,11 +112,12 @@ QString MainWindow::PackToJSON() const
 {
     QJsonObject dataToSend, videoObj;
     dataToSend["photo"] = this->pPhoto;
-    for(auto x : VideoWidget::vidProps){
-        videoObj.insert(x.videoName, QJsonArray({0, 0}));
+    for(auto videoPath : ds.getVideoName()){
+        videoObj.insert(videoPath, QJsonArray({0, 0}));
     }
 
     dataToSend["video"] = videoObj;
+    dataToSend["out"] = ds.getOutputPath();
 
     QString saveFileName(this->pRoot + "/JsonTest.json");
     QFileInfo fileInfo(saveFileName);
@@ -132,7 +133,7 @@ QString MainWindow::PackToJSON() const
 
 void MainWindow::on_runButton_clicked() // Pack to JSON and send to python
 {
-    if(this->pPhoto.isEmpty() || VideoWidget::vidProps.isEmpty()){
+    if(this->pPhoto.isEmpty() || ds.getVideoName().isEmpty()){
         QMessageBox::warning(this, tr("Not enough data!"), tr("Photo or at least one video is requiered."));
     } else {
         QString jsonPath = PackToJSON();

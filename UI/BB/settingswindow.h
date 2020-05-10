@@ -2,6 +2,7 @@
 #define SETTINGSWINDOW_H
 
 #include "debugconsole.h"
+#include "datastorage.h"
 
 #include <QDialog>
 
@@ -37,7 +38,11 @@ private slots:
 
     void on_SaveBtn_clicked();
 
+    void on_browseOutBtn_clicked();
+
 private:
+
+    DataStorage ds;
     QString getPath(const QString&, bool);
     void setConfigDefaults();
     void UpdateConfig(const QList< QPair<QString, QString> >&);

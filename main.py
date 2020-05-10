@@ -1,31 +1,42 @@
-import base64
-import datetime
-import glob
-import json
-import os
-import shutil
-import sys
-import time
-import urllib
-
-import cv2
 import insightface
+import time
+import datetime
+import os
+import cv2
 import numpy as np
+import glob
+import urllib, base64
+import threading
 
-# import threading
+# Just disables the warning, doesn't enable AVX/FMA
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp"
 
-# os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp"
-
-input("1")
 # model = insightface.app.FaceAnalysis(det_name='retinaface_r50_v1', rec_name='arcface_r100_v1', ga_name='genderage_v1')
 model = insightface.app.FaceAnalysis(det_name='retinaface_mnet025_v2', rec_name='arcface_r100_v1', ga_name=None)
-input("2")
 model.prepare(ctx_id=0, nms=0.4)
+database = {}
+base64string = "Basic YWRtaW46MTIz"
+request = urllib.request.Request('http://192.168.1.108/cgi-bin/snapshot.cgi?1')
+request.add_header("Authorization", base64string)
 
-input("3")
+last_frame = None
+
+
+def get_image():
+    # download the image, convert it to a NumPy array, and then read
+    # it into OpenCV format
+    resp = urllib.request.urlopen(request)
+    image = np.asarray(bytearray(resp.read()), dtype="uint8")
+    image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+
+    # return the image
+    return image
+
 
 def putText(img, text, text_offset_x, text_offset_y, font_scale=1.5):
     font = cv2.FONT_HERSHEY_PLAIN
+
     # set the rectangle background to white
     rectangle_bgr = (255, 255, 255)
     # get the width and height of the text box
@@ -36,43 +47,48 @@ def putText(img, text, text_offset_x, text_offset_y, font_scale=1.5):
     # make the coords of the box with a small padding of two pixels
     box_coords = ((text_offset_x, text_offset_y), (text_offset_x + text_width - 2, text_offset_y - text_height - 2))
     img = cv2.rectangle(img, box_coords[0], box_coords[1], rectangle_bgr, cv2.FILLED)
-    img = cv2.putText(img, text, (text_offset_x, text_offset_y), font, fontScale=font_scale, color=(0, 0, 0), thickness=1)
+    img = cv2.putText(img, text, (text_offset_x, text_offset_y), font, fontScale=font_scale, color=(0, 0, 0),
+                      thickness=1)
 
     return img
 
 
-def prepare_database(pathToIndentity):
+def prepare_database():
     database = {}
 
     # load all the images of individuals to recognize into the database
-    # for file in glob.glob("D:/DAN/facerec/database/*"):
-    identity = os.path.splitext(os.path.basename(pathToIndentity))[0]
-    # embedding_norm, embedding, normed_embedding
-    database[identity] = model.get(cv2.imread(pathToIndentity))[0].embedding
+    for file in glob.glob("database/*"):
+        identity = os.path.splitext(os.path.basename(file))[0]
+        database[identity] = model.get(cv2.imread(file))[0].embedding  # embedding_norm, embedding, normed_embedding
 
     return database
 
 
 def process_frame(img):
     faces = model.get(img, det_thresh=0.8, det_scale=1.0, max_num=0)
-    
-    finded = False
-
     for idx, face in enumerate(faces):
         bbox = face.bbox.astype(np.int).flatten()
-        
+        # print("Face [%d]:"%idx)
+        # print("\tembedding shape:%s"%face.embedding.shape)
+        # print("\tbbox:%s"%(bbox))
+        # print("\tlandmark:%s"%(face.landmark.astype(np.int).flatten()))
+
         identity = who_is_it(face.normed_embedding)
         if identity is None:
             img = cv2.rectangle(img, (bbox[0], bbox[1]), (bbox[2], bbox[3]), (0, 0, 255), 2)
         else:
-            finded = True
             img = cv2.rectangle(img, (bbox[0], bbox[1]), (bbox[2], bbox[3]), (255, 255, 255), 2)
             img = putText(img, identity, bbox[2], bbox[3])
 
-    if not finded:
-        return None
-    
+    # img = cv2.putText(img, identity, (bbox[2], bbox[3]), cv2.FONT_HERSHEY_SIMPLEX, 1, 255)
     return img
+
+
+def process_last_frame():
+    while True:
+        cv2.imshow('Video', process_frame(last_frame))
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
 
 def who_is_it(embedding):
@@ -84,14 +100,13 @@ def who_is_it(embedding):
             max_sim = sim
             identity = name
 
+    # print(str(identity))
+    # print(max_sim)
+
     if max_sim <= 0.4:
         return None
     else:
         return str(identity)
-
-
-def sendPhotosToDB(path):
-    shutil.copy2(path, "database")
 
 
 def autotune(img):
@@ -103,55 +118,29 @@ def autotune(img):
 
 
 if __name__ == "__main__":
-    pathToJson = sys.argv[1]
+    database = prepare_database()
 
-    with open(pathToJson) as packedData:
-        data = json.load(packedData)
-    input("4")
-    print(data)
-    pPhoto = data["photo"]
-    pVideo = [(name, time) for name, time in data['video'].items()]
-    print(pVideo)
-    input("5")
-    pOut = data["out"]
-    # videoTimeCodeStart = data["video"][1], data["video"][2]
-
-    database = prepare_database(pPhoto)
-    print('WORKING')
-    vs = cv2.VideoCapture(pVideo[0][0])
+    # cv2.imwrite('test.jpg', process_frame(cv2.imread('content/test.jpg')))
+    # exit()
+    # vs = cv2.VideoCapture('rtsp://admin:123@192.168.1.108:554/live')
+    vs = cv2.VideoCapture('test2.mp4')
 
     ret, img = vs.read()
-    # cv2.imwrite('D:/DAN/facerec/out/test.jpg', img=img)
-    # print(img)
+    last_frame = img
     # autotune(img)
 
-    frame_num = 0
-    fps = vs.get(cv2.CAP_PROP_FPS)
-    time_limit = 2*fps - 1
+    # x = threading.Thread(target=process_last_frame)
+    # x.start()
 
-    start = time.time()
     while True:
-        frame_num += 1
-
         ret, img = vs.read()
-
-        if not ret:
-            break
-        # print('STILL WORKING')
-        tmp = process_frame(img)
-        # print(img)
-        if tmp is not None:
-            print('IMG IS NOT NONE')
-            print(str(datetime.timedelta(seconds=(frame_num/fps))).replace(":", "-"))
-            errn0 = cv2.imwrite(pOut + '/frame_at_' +
-                                str(datetime.timedelta(seconds=(frame_num/fps))).replace(":", "-") + '.jpg', tmp)
-            print("Image Saved: ", errn0)
-            vs.set(cv2.CAP_PROP_POS_FRAMES, frame_num + time_limit)
-            frame_num += time_limit
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if ret == False:
             break
 
-    print(time.time() - start)
+        # last_frame = img
+        cv2.imshow('video', process_frame(img))  # Почему то не работает
+    # cv2.imwrite('test.jpg', process_frame(img))
+
+    print(datetime.datetime.now())
     vs.release()
     cv2.destroyAllWindows()

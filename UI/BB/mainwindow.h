@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include "videowidget.h"
-#include "vidcontainer.h"
+#include "datastorage.h"
 #include "settingswindow.h"
 #include "debugconsole.h"
 
@@ -59,6 +59,7 @@ private:
     QString pLog;
 /** Defaults Paths END **/
 
+    DataStorage ds;
     QVector<QPixmap> images;
     Ui::MainWindow *ui;
     QVBoxLayout* vbox;
