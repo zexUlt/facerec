@@ -3,20 +3,20 @@ import json
 import os
 import sys
 import time
-import multiprocessing as mp
 
 import cv2
 import insightface
 import numpy as np
 
 # import threading
-timelog = open('D:/DAN/facerec/Timetimelog.timelog', 'a')
+timelog = open('D:/DAN/facerec/Timelog.timelog', 'a')
     
 # model = insightface.app.FaceAnalysis(det_name='retinaface_r50_v1', rec_name='arcface_r100_v1', ga_name='genderage_v1')
 model = insightface.app.FaceAnalysis(det_name='retinaface_mnet025_v2', rec_name='arcface_r100_v1', ga_name=None)
 start = time.time()
 model.prepare(ctx_id=0, nms=0.4)
 timelog.write("Model preparing time: " + str(time.time() - start) + '\n')
+
 
 def putText(image, text, text_offset_x, text_offset_y, font_scale=1.5):
     font = cv2.FONT_HERSHEY_PLAIN
@@ -88,32 +88,6 @@ def who_is_it(embedding):
         return str(identity)
 
 
-def process(processList, pOut, startFrame, endFrame):
-    global pVideo
-    cap = cv2.VideoCapture(pVideo[0][0])
-    log = open("D:/DAN/facerec/Process.log", 'a')
-
-    frame_num = 0
-    fps = cap.get(cv2.CAP_PROP_FPS)
-    time_limit = 2*fps - 1
-
-    for frame in range(startFrame, endFrame):
-        cap.set(cv2.CAP_PROP_POS_FRAMES, frame)
-        ret, img = cap.read()
-
-        # if not ret:
-        #     break
-        log.write("Running " + mp.current_process().name)
-        tmp = process_frame(img)
-        if tmp is not None:
-            log.write("Found " + mp.current_process().name)
-            errn0 = cv2.imwrite(pOut + '/frame_at_' +
-                                str(datetime.timedelta(seconds=(frame_num / fps))).replace(":", "-") + '.jpg', tmp)
-            cap.set(cv2.CAP_PROP_POS_FRAMES, frame_num + time_limit)
-            frame_num += time_limit
-        cap.release()
-
-
 if __name__ == "__main__":
     # pathToJson = sys.argv[1]
     pathToJson = "D:/DAN/facerec/JsonTest.json"
@@ -128,68 +102,39 @@ if __name__ == "__main__":
     database = prepare_database(pPhoto)
 
     temp_cap = cv2.VideoCapture(pVideo[0][0])
-    fileLen = int(temp_cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    temp_cap.release()
 
-    inQ1 = mp.JoinableQueue()
-    inQ2 = mp.JoinableQueue()
-    processList = [inQ1, inQ2]
+    frame_num = 0
+    fps = temp_cap.get(cv2.CAP_PROP_FPS)
+    time_limit = 2 * fps - 1
 
-    processCount = len(processList)
-    bunches = list()
+    frameProcessTime = list()
 
-    for startFrame in range(0, fileLen, fileLen // processCount):
-        endFrame = startFrame + fileLen // processCount
-        bunches.append((startFrame, endFrame))
+    while True:
+        iter_start = time.time()
+        frame_num += 1
 
-    proc = list()
+        ret, img = temp_cap.read()
 
-    for i in range(processCount):
+        if not ret:
+            break
 
-        proc.append(mp.Process(target=process, args=(processList[i], pOut, bunches[i][0], bunches[i][1])))
+        frame_proc = time.time()
+        tmp = process_frame(img)
+        frameProcessTime.append(time.time() - frame_proc)
+        if tmp is not None:
+            print(str(datetime.timedelta(seconds=(frame_num/fps))).replace(":", "-"))
+            # errn0 = cv2.imwrite(pOut + '/frame_at_' +
+            #                     str(datetime.timedelta(seconds=(frame_num/fps))).replace(":", "-") + '.jpg', tmp)
+            # print("Image Saved: ", errn0)
+            # temp_cap.set(cv2.CAP_PROP_POS_FRAMES, frame_num + time_limit)
+            # frame_num += time_limit
 
-    wcs = time.time()
-    for pc in proc:
-        start = time.time()
-        pc.start()
-        timelog.write("Partial cycle [" + str(i) + "]: " + str(time.time() - start))
-    timelog.write("Whole cycle: " + str(time.time() - wcs))
-
-    for Q in processList:
-        Q.close()
-
-    for pc in proc:
-        pc.terminate()
-        pc.join()
-    # frameProcessTime = list()
-    # iterTime = list()
-
-    # while True:
-    #     iter_start = time.time()
-    #     frame_num += 1
+        # if cv2.waitKey(1) & 0xFF == ord('q'):
+        #     break
+        # iterTime.append(time.time() - iter_start)
     #
-    #     ret, img = vs.read()
-    #
-    #     if not ret:
-    #         break
-    #
-    #     frame_proc = time.time()
-    #     tmp = process_frame(img)
-    #     frameProcessTime.append(time.time() - frame_proc)
-    #     if tmp is not None:
-    #         print(str(datetime.timedelta(seconds=(frame_num/fps))).replace(":", "-"))
-    #         errn0 = cv2.imwrite(pOut + '/frame_at_' +
-    #                             str(datetime.timedelta(seconds=(frame_num/fps))).replace(":", "-") + '.jpg', tmp)
-    #         print("Image Saved: ", errn0)
-    #         vs.set(cv2.CAP_PROP_POS_FRAMES, frame_num + time_limit)
-    #         frame_num += time_limit
-    #
-    #     if cv2.waitKey(1) & 0xFF == ord('q'):
-    #         break
-    #     iterTime.append(time.time() - iter_start)
-
-    # timelog.write("Mean frame process time: " + str(sum(frameProcessTime)/len(frameProcessTime)) + '\n')
+    timelog.write("Mean frame process time: " + str(sum(frameProcessTime)/len(frameProcessTime)) + '\n')
     # timelog.write("Mean iteration time: " + str(sum(iterTime)/len(iterTime)) + '\n')
-
-    # vs.release()
-    cv2.destroyAllWindows()
+    #
+    temp_cap.release()
+    # cv2.destroyAllWindows()

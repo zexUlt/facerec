@@ -4,3 +4,5 @@ videodatabase
 UI\build*
 out*\*
 *log
+*json
+
