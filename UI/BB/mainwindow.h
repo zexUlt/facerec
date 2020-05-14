@@ -6,6 +6,8 @@
 #include "settingswindow.h"
 #include "debugconsole.h"
 
+class Gallery;
+
 #include <QObject>
 #include <QMainWindow>
 
@@ -59,6 +61,7 @@ private:
     QString pLog;
 /** Defaults Paths END **/
 
+    Gallery* imageViewer;
     DataStorage ds;
     QVector<QPixmap> images;
     Ui::MainWindow *ui;

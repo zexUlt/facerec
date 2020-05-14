@@ -1,4 +1,6 @@
 database
-UI/__pycache__
+UI\__pycache__
 videodatabase
-UI/build*
+UI\build*
+out*\*
+*log

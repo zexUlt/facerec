@@ -1,0 +1,7 @@
+{
+    "outFolderPathEntry": "D:/DAN/facerec/out",
+    "photoPathEntry": "D:/DAN/facerec/database",
+    "pyModulePathEntry": "D:/DAN/facerec/processor.py",
+    "rootPathEntry": "D:/DAN/facerec",
+    "videoPathEntry": "D:/DAN/facerec/videodatabase"
+}

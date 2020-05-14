@@ -172,6 +172,9 @@ void SettingsWindow::LoadSettings()
     ui->photoPathEntry->setText(cfgObject["photoPathEntry"].toString());
     ui->videoPathEntry->setText(cfgObject["videoPathEntry"].toString());
     ui->pyModulePathEntry->setText(cfgObject["pyModulePathEntry"].toString());
+    ui->outFolderPathEntry->setText(cfgObject["outFolderPathEntry"].toString());
+
+    ds.setOutputPath(ui->outFolderPathEntry->text());
 }
 
 

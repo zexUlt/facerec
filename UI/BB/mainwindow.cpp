@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "gallery.h"
+
 #include <QLineEdit>
 #include <QFileDialog>
 #include <QPushButton>
@@ -136,12 +138,14 @@ void MainWindow::on_runButton_clicked() // Pack to JSON and send to python
     if(this->pPhoto.isEmpty() || ds.getVideoName().isEmpty()){
         QMessageBox::warning(this, tr("Not enough data!"), tr("Photo or at least one video is requiered."));
     } else {
+        this->imageViewer = new Gallery(this);
+
         QString jsonPath = PackToJSON();
         if(QUrl(jsonPath).isValid()){
             ui->statusbar->showMessage("Data sent!", 10000);
         }
         ui->statusbar->showMessage("Running neural network...", 10000);
-        QString pythonCall = "python " + this->pPyProcess + " " + jsonPath;
+        QString pythonCall = "start /MIN python " + this->pPyProcess + " " + jsonPath;
 
         system(pythonCall.toStdString().c_str());
     }

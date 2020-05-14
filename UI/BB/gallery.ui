@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Gallery</class>
+ <widget class="QWidget" name="Gallery">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1106</width>
+    <height>554</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>854</width>
+    <height>500</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1182</width>
+    <height>978</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Preview</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+QWidget {
+	background-color: #222;
+	color: #fff;
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <spacer name="verticalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>108</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>108</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="PrevBtn">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton:hover{
+	background-color: qlineargradient(spread:pad, x1:0, y1:0.5, x2:1, y2:0.522727, stop:0 rgba(43, 43, 43, 135), stop:1 rgba(0, 0, 0, 0));
+	border: 1px solid #202020;
+}
+
+QPushButton {
+	line-height: 20px;
+    font-size: 12px;
+    padding: 6px 15px;
+	background-color: qlineargradient(spread:pad, x1:0, y1:0.5, x2:1, y2:0.522727, stop:0 rgba(43, 43, 43, 216), stop:1 rgba(0, 0, 0, 0));
+    color: #fafafa;
+    font-family: sans-serif;
+    border-radius: .25em;
+    border: 1px solid rgb(13, 13, 13);
+	border-left: 2px solid #202020;
+	border-bottom:  2px solid #202020;
+}</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="Resources.qrc">
+         <normaloff>:/rec/img/icons/prev.png</normaloff>:/rec/img/icons/prev.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>64</width>
+         <height>64</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap resource="Resources.qrc">:/rec/img/placeholders/photo_placeholder_lighter_dark.png</pixmap>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="NextBtn">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton:hover{
+	background-color: qlineargradient(spread:pad, x1:0, y1:0.5, x2:1, y2:0.522727, stop:0 rgba(43, 43, 43, 135), stop:1 rgba(0, 0, 0, 0));
+	border: 1px solid #202020;
+}
+
+QPushButton {
+	line-height: 20px;
+    font-size: 12px;
+    padding: 6px 15px;
+	background-color: qlineargradient(spread:pad, x1:0, y1:0.5, x2:1, y2:0.522727, stop:0 rgba(43, 43, 43, 216), stop:1 rgba(0, 0, 0, 0));
+    color: #fafafa;
+    font-family: sans-serif;
+    border-radius: .25em;
+    border: 1px solid rgb(13, 13, 13);
+	border-left: 2px solid #202020;
+	border-bottom:  2px solid #202020;
+}</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="Resources.qrc">
+         <normaloff>:/rec/img/icons/next.png</normaloff>:/rec/img/icons/next.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>64</width>
+         <height>64</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="Resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

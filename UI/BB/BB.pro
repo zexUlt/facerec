@@ -20,6 +20,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     datastorage.cpp \
     debugconsole.cpp \
+    gallery.cpp \
     main.cpp \
     mainwindow.cpp \
     popup.cpp \
@@ -30,6 +31,7 @@ SOURCES += \
 HEADERS += \
     datastorage.h \
     debugconsole.h \
+    gallery.h \
     mainwindow.h \
     popup.h \
     settingswindow.h \
@@ -37,6 +39,7 @@ HEADERS += \
     videowidget.h
 
 FORMS += \
+    gallery.ui \
     mainwindow.ui \
     settingswindow.ui \
     videowidget.ui
