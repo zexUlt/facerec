@@ -5,4 +5,5 @@ UI\build*
 out*\*
 *log
 *json
-
+__pycache__
+.idea
